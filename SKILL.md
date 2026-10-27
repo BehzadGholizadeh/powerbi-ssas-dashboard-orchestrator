@@ -1,181 +1,146 @@
 ---
 name: powerbi-ssas-dashboard-orchestrator
-description: End-to-end orchestration for high-quality Power BI dashboards connected live to SSAS (Tabular or Multidimensional). Designed for Google Antigravity, Cursor, Claude Code and similar AI coding agents. Enforces safe practices, real design thinking, meaningful KPIs, and never-modify-existing-assets rule with proposed_N naming.
+description: End-to-end orchestration for high-quality Power BI dashboards connected live to SSAS (Tabular or Multidimensional). Uses Google Stitch for page/layout design, Google Opal for scientific KPI design and micro-pipelines, and Antigravity for implementation. Strictly forbids low-effort copying of existing reports. Enforces proposed_N naming and never-modify-existing-assets.
 ---
 
 # Power BI + SSAS Dashboard Orchestrator
 
 ## Mission
 
-Produce an attractive, maintainable, performant Power BI report that connects **live** to an existing SSAS model without breaking enterprise governance, security, or single source of truth.  
+Produce an original, high-value Power BI report connected **live** to an existing SSAS model.  
 
-**Critical quality rule:** Every deliverable must demonstrate real design thinking and analytical value. Simply rearranging, recoloring, or lightly editing an existing sample report is **forbidden** and considered a failed output.
+The process must combine:
+- **Google Stitch** → professional page and visual hierarchy design
+- **Google Opal** → scientific KPI design, measure logic, and short prompt chains
+- **Antigravity** → implementation, theme, documentation and validation
 
-Treat every AI-generated design, DAX, theme or asset as a draft that must be verified in the target Power BI Desktop version against the real SSAS model.
+Simply rearranging or lightly editing an existing sample report is **strictly forbidden** and counts as a failed deliverable.
 
-## Tool Roles
+## Core Tool Orchestration
 
-| Tool | Role | Rules |
-|------|------|-------|
-| **Google Stitch** | Design exploration only | Produce layouts, hierarchy, spacing, typography, color tokens and a `DESIGN.md`. Never treat the output as a finished Power BI report or claim direct HTML/CSS → native visual conversion. |
-| **Google Antigravity** | Implementation workspace | Draft theme JSON, SVG assets, documentation, test checklists and PBIP scaffolding when supported. Keep all changes reviewable. |
-| **Google Opal** | Optional short-lived experiments only | Use only while available. Export every useful prompt/spec to ordinary Markdown. Never make Opal a required dependency. |
-| **Power BI Desktop** | Authoritative implementation & visual QA | Final report must open, render and be saved in the exact target Desktop build. |
-| **SSAS / Tabular Editor / DAX Studio** | Model metadata & performance | Use only tools approved and installed in the user’s environment. Never assume credentials or direct write access. |
+| Tool | Primary Responsibility | How it must be used |
+|------|------------------------|---------------------|
+| **Google Stitch** | Page & Layout Design | Generate 3 distinct high-fidelity layout alternatives (Executive, Diagnostic, Operational). Export DESIGN.md + color/typography tokens. Never treat Stitch output as final Power BI visuals. |
+| **Google Opal** | Scientific KPI Design & Micro-pipelines | Design meaningful indicators using KPI science (decision-focused, comparable, actionable). Generate report-level DAX ideas, SVG concepts, and short prompt chains. Export everything to Markdown. |
+| **Google Antigravity** | Implementation & Validation | Turn the approved design + KPI specs into theme.json, documentation, implementation plan and QA checklist. |
+| **Power BI Desktop** | Final Authority | The only place where the real report is built and verified. |
+| **SSAS tools** | Metadata only | Read-only discovery of existing measures and structures. |
 
 ## Non-negotiable Constraints
 
-1. Identify the target environment first: **Power BI Report Server (PBIRS)** or **Power BI Service**. Confirm the exact Desktop build compatible with the target.
-2. Identify the SSAS model type: **Tabular** or **Multidimensional (Cube)**, plus exact server / database / model name and connection mode.
-3. Prefer **Live Connection** for any governed SSAS model unless the user explicitly approves another architecture.
-4. Multidimensional Live Connection → measures must already exist in the cube; report-level measures are not supported. Tabular Live Connection → verify report-measure support before generating any DAX.
-5. **Never invent** tables, columns, hierarchies, measures, relationships, calculation groups or KPI definitions. Base every expression only on supplied metadata and confirmed business definitions.
-6. Preserve SSAS security (roles, dimension security, RLS). Do not request passwords or bypass access controls.
-7. **Never modify any existing report, dashboard or SSAS model.** Previous assets must remain completely untouched. Produce only proposed changes; obtain explicit approval before any edit or deployment.
-8. If a new SSAS model or new dashboard/report must be created, always name it `proposed_1`, `proposed_2`, `proposed_3`, … Never overwrite production objects.
-9. Treat custom SVG and third-party visuals as optional. Prefer native visuals.
-10. Never place essential labels, KPI values or filters only inside a static background image.
-11. Optimize for business readability and query performance before decorative effects.
-12. Always maintain a living inventory of: server names, structure/topology, tables/cubes/models, data summary, and lookup guidance.
+1. Prefer **Live Connection**. Never change the existing SSAS model or any production report.
+2. Any new report/dashboard must be named `proposed_1`, `proposed_2`, `proposed_3`...
+3. Never invent tables, columns or measures that do not exist in the model.
+4. **No low-effort work**: Copying, recoloring or lightly rearranging a sample PBIX is forbidden.
+5. Every dashboard must start from clear **business questions**, not from an existing layout.
+6. At least 3–5 scientifically designed KPIs are required.
+7. Maintain full server inventory (names, structure, tables, data summary, lookup guidance).
 
-### Quality & Anti-Low-Effort Rules (Mandatory)
+## Scientific KPI Design Principles (Opal must follow)
 
-13. **No copy-paste or light editing of existing reports.** Taking an existing PBIX/sample and only rearranging visuals, changing colors, or adding 1–2 cards is strictly forbidden. This is considered a failed deliverable.
-14. Every new dashboard must start from **business questions**, not from an existing layout. If the user provides a sample, treat it only as a reference for data/measures, never as a template to clone.
-15. At least **3–5 meaningful KPIs** with clear business definitions must be designed or selected. KPIs must answer real decisions (e.g. opportunity loss, activation gap, margin impact, regional underperformance).
-16. Layout must show clear visual hierarchy, reading order, and purposeful page separation (Executive / Diagnostic / Operational). Random placement of cards is not acceptable.
-17. If the agent cannot produce a design that is clearly superior in analytical value and usability to any provided sample, it must stop and ask for more business context instead of delivering a weak version.
+When designing indicators, Opal (or the agent) must apply these principles:
 
-## Workflow Selector
+- **Decision-oriented**: Each KPI must answer a specific business decision.
+- **Comparable**: Always include context (vs target, vs previous period, vs peer group, vs benchmark).
+- **Actionable**: The user should know what to do when the KPI is red/amber/green.
+- **Clean**: Prefer simple, well-known calculations over complex nested logic when possible.
+- **Trustworthy**: Only use confirmed measures from the SSAS model. Clearly mark any report-level calculation.
+- **Hierarchical**: Separate Strategy KPIs (top row) from Diagnostic KPIs and Operational metrics.
 
-| User intent | Start at |
-|-------------|----------|
-| New dashboard or page design | Phase 1 → Phase 3 |
-| Inventory / audit of existing SSAS | Phase 1 → Phase 2 |
-| Implementation of an already-approved design | Phase 4 |
-| DAX / SVG / theme work only | Phase 5 |
-| Final build & QA | Phase 6 |
-| Handoff / documentation | Phase 7 |
+Good KPI examples:
+- Activation Rate % + gap vs target
+- Opportunity Loss (value of non-activated promotions)
+- Margin Impact of Promotion
+- Stores with Zero Sales after activation
+- Regional Underperformance Index
 
-Always run Phase 1 first if any Non-negotiable item is unknown.
+## Workflow
 
-## Phase 1 — Intake and Discovery
+### Phase 1 — Discovery (Mandatory)
+Collect:
+- Business questions the dashboard must answer (3–7 questions)
+- SSAS type, server name, database/model
+- List of existing measures (or field pane screenshot)
+- Audience and decisions
+- Any brand guidelines
 
-**Mandatory first step:** Collect the primary business questions the dashboard must answer. Without clear questions, do not proceed to design.
+If a sample report is given → treat it only as a source of confirmed measures. Explicitly declare that a completely new design will be created.
 
-Ask for:
+### Phase 2 — Scientific KPI Design (Opal)
+Using Opal (or equivalent reasoning):
+1. Map each business question to candidate KPIs
+2. Apply the Scientific KPI Design Principles above
+3. Propose 5–8 strong KPI candidates with:
+   - Business definition
+   - Required existing measures
+   - Comparison logic
+   - Suggested visual type
+4. Select the best 3–5 KPIs for the dashboard
+5. Export the KPI specification to Markdown
 
-- Target environment (PBIRS / Service) and exact Power BI Desktop version
-- SSAS type (Tabular / Multidimensional)
-- **Server inventory**: server names, topology, tables/cubes, data summary, lookup guidance
-- Audience and the **3–7 key decisions / questions** the dashboard must support
-- Official KPI / measure definitions (if they exist)
-- Available metadata (field list, DMV, screenshots of field pane)
-- Required filters, drill-through, RLS, export needs
-- Brand guidelines (if any)
+### Phase 3 — Page Design with Stitch
+Prompt Stitch to create **three materially different** layouts based on the approved KPIs:
 
-If a sample report is provided, explicitly state:  
-“Sample will be used only as a source of confirmed measures and data shapes. A completely new design will be created.”
+1. Executive / Strategic
+2. Diagnostic / Root-cause
+3. Operational / Action list
 
-If metadata or business questions are missing → produce a discovery checklist and stop. Do not generate a production report.
+Stitch output must include clear hierarchy, proper spacing, and realistic room for slicers.  
+Save as `design/design-spec.md` + tokens.
 
-## Phase 2 — Model and Compatibility Audit
+### Phase 4 — Implementation Plan
+Map every visual to:
+- Confirmed SSAS measure/field
+- Visual type
+- Interactions
+- Acceptance criteria linked to original business questions
 
-Create / update `docs/model-inventory.md` with:
+### Phase 5 — Build & Validate
+Implement only after design and KPIs are approved.  
+Final report must be opened and checked in Power BI Desktop.
 
-- Full server inventory
-- SSAS type, connection mode, version constraints
-- Confirmed measures, dimensions, hierarchies, format strings
-- Mapping of business questions → candidate measures
-- Known limitations
-- Explicit statement that no existing reports/models will be modified; new objects use `proposed_N`
+## Stitch Prompt Template (use this)
 
-## Phase 3 — Design (Real Design Thinking Required)
+“Design three high-fidelity enterprise Power BI dashboard layouts (Executive, Diagnostic, Operational) for [audience].  
+The dashboard will connect live to SSAS and must answer these business questions: [list questions].  
+Primary KPIs to feature: [list the scientifically designed KPIs].  
+Requirements:
+- Clear visual hierarchy and reading order
+- Strong KPI cards with comparison context
+- Realistic space for filters and slicers
+- Professional, restrained design system
+- Support for Persian/RTL if needed
+Do not invent data. Distinguish decorative elements from real visuals.  
+Export DESIGN.md with colors, typography, spacing and component rules.”
 
-Do **not** start from any existing report layout.
+## Opal Prompt Direction (KPI Science)
 
-Request or produce **three materially different** alternatives:
-
-1. Executive / Strategic overview
-2. Analytical / Diagnostic (root-cause focused)
-3. Operational / Action-oriented
-
-Each alternative must include:
-
-- Clear primary message per page
-- 3–5 high-value KPI cards with comparison (vs target / previous period / peer)
-- Logical visual hierarchy and reading order
-- Purposeful use of space (not crowded, not sparse)
-- Realistic filter placement
-
-Document the chosen design in `design/design-spec.md`.
-
-**Rejection criteria:** Any design that is essentially a re-skin or rearrangement of a provided sample must be rejected and redone.
-
-## Phase 4 — Implementation Plan
-
-Create `docs/implementation-plan.md` mapping every component to:
-
-- Native visual type (preferred)
-- Confirmed SSAS fields / measures
-- Interactions and filters
-- Compatibility notes
-- Acceptance criteria tied to the original business questions
-
-## Phase 5 — DAX and Visual Engineering
-
-For every proposed measure:
-
-1. Business definition and the decision it supports
-2. Only confirmed model objects
-3. Report-level vs model-level decision
-4. Blank/zero, totals, formatting, RLS checks
-5. Performance-conscious patterns
-
-## Phase 6 — Build and Validate
-
-Implementation is incomplete until opened and tested in the target Power BI Desktop version.
-
-Must verify:
-
-- Connection and correct numbers against trusted sources
-- Every interaction
-- That the dashboard answers the original business questions better than any previous sample
-- No existing assets were modified
-
-## Phase 7 — Deliverables
-
-- `design/design-spec.md`
-- `docs/model-inventory.md`
-- `docs/implementation-plan.md`
-- Validated `theme.json`
-- `docs/qa-checklist.md`
-- Any justified DAX/SVG
-- Handoff note confirming:  
-  – No existing reports/models were modified  
-  – New objects use `proposed_N`  
-  – Design is original and answers the stated business questions
-
-## Antigravity / Agent Prompt Template
-
-“Act as a senior Power BI report engineer specializing in SSAS Live Connection.  
-First confirm business questions and available metadata.  
-Never clone or lightly edit an existing report.  
-Create an original design with clear hierarchy and meaningful KPIs that answer the business questions.  
-Use only confirmed measures.  
-Name any new report `proposed_N`.  
-Produce design-spec, model-inventory, implementation-plan and QA checklist.  
-Stop and ask for more context if you cannot deliver clear analytical improvement over any provided sample.”
+“Act as a KPI designer applying scientific dashboard principles.  
+Business questions: [list].  
+Available confirmed measures: [list].  
+Design 5–8 strong candidate KPIs. For each provide:
+- Clear business definition
+- Which existing measures are used
+- Comparison logic (target / previous / peer)
+- Why this KPI drives a decision
+- Recommended visual
+Then recommend the best 3–5 KPIs for an executive + diagnostic dashboard.”
 
 ## Definition of Done
 
-A dashboard is done only when:
+- Original design (not a rearrangement of any sample)
+- KPIs designed with scientific principles and tied to business questions
+- Stitch used for layout exploration
+- Opal (or equivalent) used for KPI design
+- Only confirmed SSAS measures used
+- New report named `proposed_N`
+- No existing reports or models modified
+- Full documentation delivered (design-spec, model-inventory, implementation-plan, qa-checklist)
 
-- It is an original design (not a rearrangement of a sample)
-- It answers the stated business questions with clear, meaningful KPIs
-- All data-bearing elements use confirmed model objects
-- Key figures reconcile to trusted results
-- Interactions, security and performance are tested
-- No existing reports or models were modified
-- Full server inventory is documented
-- Naming follows `proposed_N` convention
+## Agent Instruction (short version)
+
+First collect business questions and confirmed measures.  
+Then use scientific KPI design (Opal-style) to define meaningful indicators.  
+Then use Stitch to design original page layouts around those KPIs.  
+Never clone or lightly edit an existing report.  
+Name the result `proposed_N`.
